@@ -5,7 +5,7 @@ import re
 class Equation(object):
     allowed_symbols = ['+', '-', '*', '=']
     pattern = r'^X(\^(\d)+)?$'
-    max_degree = 3
+    max_degree = 10
 
     def __init__(self, str_equation):
         self.x = [0] * (self.max_degree + 1)
@@ -79,7 +79,6 @@ class Equation(object):
         return '-' if x < 0 else '+'
 
     def _reduce(self):
-        self._count_degree()
         res = f'{self.x[0]:g} * X^0'
         for i in range(1, self.degree + 1):
             res += f' {self._print_sign(self.x[i])} {ft_abs(self.x[i]):g} * X^{i}'
@@ -126,13 +125,12 @@ class Equation(object):
     def _print_reduce(self):
         print(f'Reduced form: {self._reduce()}')
 
-    def _count_degree(self):
-        self.degree = len(self.x) - 1
-        while not self.x[self.degree]:
-            self.degree -= 1
 
     def _solve(self):
-        self._print_reduce()
+        if self.degree > self.max_degree:
+            print('Equation degree is too high to reduce it')
+        else:
+            self._print_reduce()
         self._print_degree()
         if self.degree > 2:
             print('The polynomial degree is strictly greater than 2, I can\'t solve')
