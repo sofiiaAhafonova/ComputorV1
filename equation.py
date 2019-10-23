@@ -68,16 +68,16 @@ class Equation(object):
                 print("Discriminant is strictly negative, the two solutions are:")
                 x_1 = (-self.x[1] / (2 * self.x[2]), self._print_sign(-i), ft_abs(i))
                 x_2 = (-self.x[1] / (2 * self.x[2]), self._print_sign(i), ft_abs(i))
-                print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{:.6f} {} {:.6f} * i\033[39m"
+                print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{:g} {} {:g} * i\033[39m"
                       .format(x_1[0], x_1[1], x_1[2]))
-                print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{:.6f} {} {:.6f} * i\033[39m"
+                print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{:g} {} {:g} * i\033[39m"
                       .format(x_2[0], x_2[1], x_2[2]))
             else:
                 print("Discriminant is strictly positive, the two solutions are:")
                 x_1 = (-self.x[1] - ft_sqrt(discriminant)) / (2 * self.x[2])
                 x_2 = (-self.x[1] + ft_sqrt(discriminant)) / (2 * self.x[2])
-                print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{0:.6f}\033[39m".format(x_1))
-                print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{0:.6f}\033[39m".format(x_2))
+                print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{:g}\033[39m".format(x_1))
+                print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{:g}\033[39m".format(x_2))
 
     def _linear(self):
         res = - self.x[0] / self.x[1]
