@@ -4,7 +4,7 @@ import re
 
 class Equation(object):
     allowed_symbols = ['+', '-', '*', '=']
-    pattern = r'^X\^\d+$'
+    pattern = r'^X(\^(\d)+)?$'
     max_degree = 10
 
     def __init__(self, str_equation):
@@ -14,8 +14,8 @@ class Equation(object):
         try:
             self._parse(str_equation)
             self._solve()
-        except ValueError:
-            print('Invalid equation')
+        except ValueError as v:
+            print(v)
 
     def _parse(self, str_equation: str):
         def parse_degree(arg):
@@ -29,33 +29,47 @@ class Equation(object):
 
         for s in self.allowed_symbols:
             str_equation = str_equation.replace(s, f' {s} ')
+        str_equation = str_equation.replace('X', ' X')
+        print(str_equation)
+        if str_equation.count('=') != 1:
+            raise ValueError('Should be one = sign in equation')
         equation = str_equation.split()
         mult, sign = 1, 1
-        i = 0
+        i, n = 0, len(equation)
         while i < len(equation):
             e = equation[i]
             if e.isdigit() or e.replace('.', '', 1).isdigit():
                 mult = float(e) * sign
-                if equation[i + 1] != '*' or not re.match(self.pattern, equation[i + 2]):
-                    raise ValueError()
-                e = equation[i + 2][2:]
+                if n - i >= 3 and equation[i + 1] == '*' and re.match(self.pattern, equation[i + 2]):
+                    i += 2
+                elif n - i >= 2 and re.match(self.pattern, equation[i + 1]):
+                    i += 1
+                elif n - i >= 2 and equation[i + 1] in ['+', '-', '='] or n - i == 1:
+                    equation[i] = 'X^0'
+                else:
+                    raise ValueError('Invalid symbol instead or  after coefficient')
+                e = '1' if e == 'X' else equation[i][2:]
                 j = parse_degree(e)
                 if j == -1:
                     break
                 self.x[j] += mult
-                i += 2
-            elif e in ['-', '+']:
-                sign *= -1 if e == '-' else 1
-            elif e == '=':
-                sign = -1
+            elif e in ['-', '+', '='] and n - i >= 2 \
+                    and (re.match(self.pattern, equation[i + 1])
+                         or equation[i + 1].isdigit()
+                         or equation[i + 1].replace('.', '', 1).isdigit()):
+                if e == '=':
+                    sign = -1
+                elif e == '-':
+                    sign *= -1
+
             elif re.match(self.pattern, e):
-                e = e[2:]
+                e = '1' if e == 'X' else e[2:]
                 j = parse_degree(e)
                 if j == -1:
                     break
                 self.x[j] += 1
             else:
-                raise ValueError()
+                raise ValueError('Invalid equation')
             i += 1
 
     def _print_sign(self, x):
@@ -67,9 +81,6 @@ class Equation(object):
         for i in range(1, self.degree + 1):
             res += f' {self._print_sign(self.x[i])} {ft_abs(self.x[i]):g} * X^{i}'
         return res + ' = 0'
-
-    def __str__(self):
-        return self._reduce()
 
     def _quadratic(self):
         discriminant = self.x[1] * self.x[1] - 4 * self.x[2] * self.x[0]
@@ -126,11 +137,12 @@ class Equation(object):
             self.solver[self.degree]()
 
 
+print('5 * X^0 + 4 * X^1 - 9.3 * X^2 + 1 * X^3 =1 * X^0')
 Equation('5 * X^0 + 4 * X^1 - 9.3 * X^2 + 1 * X^3 =1 * X^0')
 
-print()
-Equation("5 * X^0 + 4 * X^1 = 4 * X^0")
+print("5 * X^0 +  X = 4 +")
+Equation("5 * X^0 +  4 =0")
 
-print()
+print(' X^0 + 4 * X^1 + X^2 = 0 * X^0')
 
-Equation('5 * X^0 + 4 * X^1 + X^2 = 0 * X^0')
+Equation(' X^0 + 4 * X^1 + X^2 = 0 * X^0')
