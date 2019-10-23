@@ -1,12 +1,5 @@
-import sys
-
-
 def ft_abs(a):
     return a if a >= 0 else -a
-
-
-def ft_mod(dividend, divisor):
-    pass
 
 
 def ft_pow(x, a):

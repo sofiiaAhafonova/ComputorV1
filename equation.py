@@ -18,6 +18,15 @@ class Equation(object):
             print('Invalid equation')
 
     def _parse(self, str_equation: str):
+        def parse_degree(arg):
+            if not arg.isdigit():
+                raise ValueError()
+            num = int(arg)
+            self.degree = num if num > self.degree else self.degree
+            if self.degree > self.max_degree:
+                return -1
+            return num
+
         for s in self.allowed_symbols:
             str_equation = str_equation.replace(s, f' {s} ')
         equation = str_equation.split()
@@ -30,11 +39,8 @@ class Equation(object):
                 if equation[i + 1] != '*' or not re.match(self.pattern, equation[i + 2]):
                     raise ValueError()
                 e = equation[i + 2][2:]
-                if not e.isdigit():
-                    raise ValueError()
-                j = int(e)
-                self.degree = j if j > self.degree and mult else self.degree
-                if self.degree > self.max_degree:
+                j = parse_degree(e)
+                if j == -1:
                     break
                 self.x[j] += mult
                 i += 2
@@ -44,11 +50,8 @@ class Equation(object):
                 sign = -1
             elif re.match(self.pattern, e):
                 e = e[2:]
-                if not e.isdigit():
-                    raise ValueError()
-                j = int(e)
-                self.degree = j if j > self.degree else self.degree
-                if self.degree > self.max_degree:
+                j = parse_degree(e)
+                if j == -1:
                     break
                 self.x[j] += 1
             else:
