@@ -11,11 +11,13 @@ class Equation(object):
         self.x = [0] * (self.max_degree + 1)
         self.solver = [self._zero_degree, self._linear, self._quadratic]
         self.degree = 0
+        self.success = True
         try:
             self._parse(str_equation)
             self._solve()
         except ValueError as v:
             print(f'\033[31m{v}\033[39m')
+            self.success = False
 
     def _parse(self, str_equation: str):
         def parse_degree(arg):
