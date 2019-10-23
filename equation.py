@@ -15,12 +15,10 @@ class Equation(object):
             self._parse(str_equation)
             self._solve()
         except ValueError as v:
-            print(v)
+            print(f'\033[31m{v}\033[39m')
 
     def _parse(self, str_equation: str):
         def parse_degree(arg):
-            if not arg.isdigit():
-                raise ValueError()
             num = int(arg)
             self.degree = num if num > self.degree else self.degree
             if self.degree > self.max_degree:
@@ -46,7 +44,7 @@ class Equation(object):
                 elif n - i >= 2 and equation[i + 1] in ['+', '-', '='] or n - i == 1:
                     equation[i] = 'X^0'
                 else:
-                    raise ValueError('Invalid symbol instead or  after coefficient')
+                    raise ValueError('Invalid symbol instead or after coefficient')
                 e = equation[i]
                 e = '1' if e == 'X' else e[2:]
                 j = parse_degree(e)
@@ -125,10 +123,9 @@ class Equation(object):
     def _print_reduce(self):
         print(f'Reduced form: {self._reduce()}')
 
-
     def _solve(self):
         if self.degree > self.max_degree:
-            print('Equation degree is too high to reduce it')
+            print('\033[34mEquation degree is too high to reduce it\033[39m')
         else:
             self._print_reduce()
         self._print_degree()
