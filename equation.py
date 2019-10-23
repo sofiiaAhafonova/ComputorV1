@@ -32,37 +32,52 @@ class Equation(object):
                 sign *= -1 if e == '-' else 1
             elif e == '=':
                 sign = -1
+            elif e in ['X^0', 'X^1', 'X^2']:
+                for j in range(3):
+                    if e.count(str(j)):
+                        self.x[j] += 1
+                        break
             else:
                 print(e)
                 raise ValueError('Invalid input')
             i += 1
 
+    def _print_sign(self, x):
+        return '-' if x < 0 else '+'
+
     def _reduce(self):
-        def sign(x):
-            return '-' if x < 0 else '+'
         self._count_degree()
         res = f'{self.x[0]} * X^0'
         for i in range(1, self.degree + 1):
-            res += f' {sign(self.x[i])} {ft_abs(self.x[i])} * X^{i}'
+            res += f' {self._print_sign(self.x[i])} {ft_abs(self.x[i])} * X^{i}'
         return res + ' = 0'
 
     def __str__(self):
         return self._reduce()
 
     def _quadratic(self):
-        discriminant = self.x[1] * self.x[1] - 4 * self.x[2] * self.x[1]
+        discriminant = self.x[1] * self.x[1] - 4 * self.x[2] * self.x[0]
         print(f'Discriminant is {discriminant}')
-        if discriminant < 0:
-            print("Discriminant is strictly negative, the two solutions are:")
-        elif discriminant == 0:
+
+        if discriminant == 0:
             print("Discriminant is 0, the solution is:")
             print(-self.x[1] / (2 * self.x[2]))
         else:
-            print("Discriminant is strictly positive, the two solutions are:")
-            x_1 = (-self.x[1] - ft_sqrt(discriminant)) / (2 * self.x[2])
-            x_2 = (-self.x[1] + ft_sqrt(discriminant)) / (2 * self.x[2])
-            print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{0:.6f}\033[39m".format(x_1))
-            print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{0:.6f}\033[39m".format(x_2))
+            if discriminant < 0:
+                i = ft_sqrt(-discriminant) / (2 * self.x[2])
+                print("Discriminant is strictly negative, the two solutions are:")
+                x_1 = (-self.x[1] / (2 * self.x[2]), self._print_sign(-i), ft_abs(i))
+                x_2 = (-self.x[1] / (2 * self.x[2]), self._print_sign(i), ft_abs(i))
+                print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{:.6f} {} {:.6f} * i\033[39m"
+                      .format(x_1[0], x_1[1], x_1[2]))
+                print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{:.6f} {} {:.6f} * i\033[39m"
+                      .format(x_2[0], x_2[1], x_2[2]))
+            else:
+                print("Discriminant is strictly positive, the two solutions are:")
+                x_1 = (-self.x[1] - ft_sqrt(discriminant)) / (2 * self.x[2])
+                x_2 = (-self.x[1] + ft_sqrt(discriminant)) / (2 * self.x[2])
+                print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{0:.6f}\033[39m".format(x_1))
+                print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{0:.6f}\033[39m".format(x_2))
 
     def _linear(self):
         res = - self.x[0] / self.x[1]
@@ -94,9 +109,13 @@ class Equation(object):
         else:
             self.solver[self.degree]()
 
-
+"""
 eq = Equation('5 * X^0 + 4 * X^1 - 9.3 * X^2 =1 * X^0')
 eq.solve()
 print()
 eq1 = Equation("5 * X^0 + 4 * X^1 = 4 * X^0")
 eq1.solve()
+print()
+"""
+eq = Equation('5 * X^0 + 4 * X^1 + X^2 = 0 * X^0')
+eq.solve()
