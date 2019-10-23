@@ -5,7 +5,7 @@ import re
 class Equation(object):
     allowed_symbols = ['+', '-', '*', '=']
     pattern = r'^X(\^(\d)+)?$'
-    max_degree = 10
+    max_degree = 3
 
     def __init__(self, str_equation):
         self.x = [0] * (self.max_degree + 1)
@@ -30,11 +30,10 @@ class Equation(object):
         for s in self.allowed_symbols:
             str_equation = str_equation.replace(s, f' {s} ')
         str_equation = str_equation.replace('X', ' X')
-        print(str_equation)
         if str_equation.count('=') != 1:
             raise ValueError('Should be one = sign in equation')
         equation = str_equation.split()
-        mult, sign = 1, 1
+        mult, sign, right = 1, 1, False
         i, n = 0, len(equation)
         while i < len(equation):
             e = equation[i]
@@ -48,7 +47,8 @@ class Equation(object):
                     equation[i] = 'X^0'
                 else:
                     raise ValueError('Invalid symbol instead or  after coefficient')
-                e = '1' if e == 'X' else equation[i][2:]
+                e = equation[i]
+                e = '1' if e == 'X' else e[2:]
                 j = parse_degree(e)
                 if j == -1:
                     break
@@ -58,9 +58,12 @@ class Equation(object):
                          or equation[i + 1].isdigit()
                          or equation[i + 1].replace('.', '', 1).isdigit()):
                 if e == '=':
+                    right = True
                     sign = -1
-                elif e == '-':
-                    sign *= -1
+                elif e == '-' and not right or e == '+' and right:
+                    sign = -1
+                else:
+                    sign = 1
 
             elif re.match(self.pattern, e):
                 e = '1' if e == 'X' else e[2:]
@@ -135,14 +138,3 @@ class Equation(object):
             print('The polynomial degree is strictly greater than 2, I can\'t solve')
         else:
             self.solver[self.degree]()
-
-
-print('5 * X^0 + 4 * X^1 - 9.3 * X^2 + 1 * X^3 =1 * X^0')
-Equation('5 * X^0 + 4 * X^1 - 9.3 * X^2 + 1 * X^3 =1 * X^0')
-
-print("5 * X^0 +  X = 4 +")
-Equation("5 * X^0 +  4 =0")
-
-print(' X^0 + 4 * X^1 + X^2 = 0 * X^0')
-
-Equation(' X^0 + 4 * X^1 + X^2 = 0 * X^0')
