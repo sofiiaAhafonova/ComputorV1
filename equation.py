@@ -81,6 +81,9 @@ class Equation(object):
             i += 1
 
     def _reduce(self):
+        if self.degree <= self.max_degree:
+            while self.degree and not self.x[self.degree]:
+                self.degree -= 1
         res = f'{self.x[0]:g} * X^0'
         for i in range(1, self.degree + 1):
             res += f' {self._print_sign(self.x[i])} {ft_abs(self.x[i]):g} * X^{i}'
@@ -143,9 +146,6 @@ class Equation(object):
         print(f'\033[1;36mPolynomial degree\033[39m: {self.degree}')
 
     def _print_reduce(self):
-        if self.degree <= self.max_degree:
-            while self.degree and not self.x[self.degree]:
-                self.degree -= 1
         print(f'\033[1;36mReduced form\033[39m: {self._reduce()}')
 
     @staticmethod
