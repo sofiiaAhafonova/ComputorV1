@@ -130,6 +130,9 @@ class Equation(object):
             print('\033[1;33mThere is no solution of equation\033[39m')
 
     def _print_degree(self):
+        if self.degree <= self.max_degree:
+            while not self.x[self.degree]:
+                self.degree -= 1
         print(f'\033[1;36mPolynomial degree\033[39m: {self.degree}')
 
     def _print_reduce(self):
