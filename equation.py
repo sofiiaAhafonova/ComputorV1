@@ -71,6 +71,8 @@ class Equation(object):
                     sign = 1
 
             elif re.match(self.pattern, e):
+                if n - i != 1 and equation[i + 1] not in ['+', '-', '=']:
+                    raise ValueError('Invalid symbol instead or after coefficient')
                 e = '1' if e == 'X' else e[2:]
                 j = self._parse_degree(e, 1)
                 if j == -1:
