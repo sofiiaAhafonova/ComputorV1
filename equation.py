@@ -144,7 +144,7 @@ class Equation(object):
 
     def _print_reduce(self):
         if self.degree <= self.max_degree:
-            while not self.x[self.degree]:
+            while self.degree and not self.x[self.degree]:
                 self.degree -= 1
         print(f'\033[1;36mReduced form\033[39m: {self._reduce()}')
 
