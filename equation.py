@@ -90,10 +90,9 @@ class Equation(object):
 
     def _quadratic(self):
         discriminant = self.x[1] * self.x[1] - 4 * self.x[2] * self.x[0]
-        print(f'Discriminant is {discriminant}')
+        print(f'\033[1;36mDiscriminant\033[39m is {discriminant}')
 
         if discriminant == 0:
-            print("Discriminant is 0, the solution is:")
             print(-self.x[1] / (2 * self.x[2]))
         else:
             if discriminant < 0:
@@ -101,33 +100,39 @@ class Equation(object):
                 i = ft_sqrt(-discriminant) / (2 * self.x[2])
                 x_1 = (-self.x[1] / (2 * self.x[2]), self._print_sign(-i), ft_abs(i))
                 x_2 = (-self.x[1] / (2 * self.x[2]), self._print_sign(i), ft_abs(i))
-                print("\033[34m(-b - \u221ad) / (2 * a) = \033[32m{:g} {} {:g}i\033[39m"
-                      .format(x_1[0], x_1[1], x_1[2]))
-                print("\033[34m(-b + \u221ad) / (2 * a) = \033[32m{:g} {} {:g}i\033[39m"
-                      .format(x_2[0], x_2[1], x_2[2]))
+                print(f"\033[34m(-b - \u221ad) / (2 * a) \033[39m"
+                      f"= (-({self.x[1]}) - \u221a{discriminant}) / (2 * ({self.x[2]})) "
+                      f"= \033[32m{x_1[0]:g} {x_1[1]} {x_1[2]:g}i\033[39m")
+                print(f"\033[34m(-b + \u221ad) / (2 * a) \033[39m"
+                      f"= (-({self.x[1]}) + \u221a{discriminant}) / (2 * ({self.x[2]})) "
+                      f"= \033[32m{x_2[0]:g} {x_2[1]} {x_2[2]:g}i\033[39m")
             else:
                 print("Discriminant is strictly positive, the two solutions are:")
                 x_1 = (-self.x[1] - ft_sqrt(discriminant)) / (2 * self.x[2])
                 x_2 = (-self.x[1] + ft_sqrt(discriminant)) / (2 * self.x[2])
-                print("\033[34m(-b - \u221ad) / (2 * a) = \033[32m{:g}\033[39m".format(x_1))
-                print("\033[34m(-b + \u221ad) / (2 * a) = \033[32m{:g}\033[39m".format(x_2))
+                print(f"\033[34m(-b - \u221ad) / (2 * a) \033[39m"
+                      f"= (-({self.x[1]}) - \u221a{discriminant}) / (2 * ({self.x[2]})) "
+                      f"= \033[32m{x_1:g}\033[39m")
+                print(f"\033[34m(-b + \u221ad) / (2 * a) \033[39m"
+                      f"= (-({self.x[1]}) + \u221a{discriminant}) / (2 * ({self.x[2]})) "
+                      f"= \033[32m{x_2:g}\033[39m")
 
     def _linear(self):
         res = - self.x[0] / self.x[1]
         print('The solution is:')
-        print(res)
+        print(f'\033[34m-b/a \033[39m= -({self.x[0]})/({self.x[1]}) = \033[32m{res:g}\033[39m')
 
     def _zero_degree(self):
         if self.x[0] == 0:
-            print('All the real numbers are solution')
+            print('\033[1;32mAll the real numbers are solution\033[39m')
         else:
-            print('There is no solution of equation')
+            print('\033[1;33mThere is no solution of equation\033[39m')
 
     def _print_degree(self):
-        print(f'Polynomial degree: {self.degree}')
+        print(f'\033[1;36mPolynomial degree\033[39m: {self.degree}')
 
     def _print_reduce(self):
-        print(f'Reduced form: {self._reduce()}')
+        print(f'\033[1;36mReduced form\033[39m: {self._reduce()}')
 
     def _solve(self):
         if self.degree > self.max_degree:
@@ -136,6 +141,6 @@ class Equation(object):
             self._print_reduce()
         self._print_degree()
         if self.degree > 2:
-            print('The polynomial degree is strictly greater than 2, I can\'t solve')
+            print('\033[1;33mThe polynomial degree is strictly greater than 2, I can\'t solve it\033[39m')
         else:
             self.solver[self.degree]()
