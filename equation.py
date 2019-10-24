@@ -5,7 +5,7 @@ import re
 class Equation(object):
     allowed_symbols = ['+', '-', '*', '=']
     pattern = r'^X(\^(\d)+)?$'
-    max_degree = 10
+    max_degree = 100
 
     def __init__(self, str_equation):
         self.x = [0] * (self.max_degree + 1)
@@ -60,7 +60,8 @@ class Equation(object):
             elif e in ['-', '+', '='] and n - i >= 2 \
                     and (re.match(self.pattern, equation[i + 1])
                          or equation[i + 1].isdigit()
-                         or equation[i + 1].replace('.', '', 1).isdigit()):
+                         or equation[i + 1].replace('.', '', 1).isdigit()
+                         or e == '=' and equation[i + 1] == '-'):
                 if e == '=':
                     right = True
                     sign = -1
@@ -90,13 +91,13 @@ class Equation(object):
 
     def _quadratic(self):
         discriminant = self.x[1] * self.x[1] - 4 * self.x[2] * self.x[0]
-        print(f'\033[1;36mDiscriminant\033[39m is {discriminant}')
-
+        print(f'\033[1;36mDiscriminant\033[39m: {discriminant:g}\n')
         if discriminant == 0:
+            print('\033[1;31mSolution is:\033[39m\n')
             print(-self.x[1] / (2 * self.x[2]))
         else:
             if discriminant < 0:
-                print("Discriminant is strictly negative, the two solutions are:")
+                print(f"Discriminant is strictly negative \nThe two\033[1;31m solutions\033[39m are:\n")
                 i = ft_sqrt(-discriminant) / (2 * self.x[2])
                 x_1 = (-self.x[1] / (2 * self.x[2]), self._print_sign(-i), ft_abs(i))
                 x_2 = (-self.x[1] / (2 * self.x[2]), self._print_sign(i), ft_abs(i))
@@ -107,7 +108,7 @@ class Equation(object):
                       f"= (-({self.x[1]}) + \u221a{discriminant}) / (2 * ({self.x[2]})) "
                       f"= \033[32m{x_2[0]:g} {x_2[1]} {x_2[2]:g}i\033[39m")
             else:
-                print("Discriminant is strictly positive, the two solutions are:")
+                print(f"Discriminant is strictly positive \nThe two\033[1;31m solutions\033[39m are:\n")
                 x_1 = (-self.x[1] - ft_sqrt(discriminant)) / (2 * self.x[2])
                 x_2 = (-self.x[1] + ft_sqrt(discriminant)) / (2 * self.x[2])
                 print(f"\033[34m(-b - \u221ad) / (2 * a) \033[39m"
@@ -119,7 +120,7 @@ class Equation(object):
 
     def _linear(self):
         res = - self.x[0] / self.x[1]
-        print('The solution is:')
+        print('\nThe\033[1;31m solution is:\033[39m\n')
         print(f'\033[34m-b/a \033[39m= -({self.x[0]})/({self.x[1]}) = \033[32m{res:g}\033[39m')
 
     def _zero_degree(self):
@@ -135,6 +136,7 @@ class Equation(object):
         print(f'\033[1;36mReduced form\033[39m: {self._reduce()}')
 
     def _solve(self):
+        print()
         if self.degree > self.max_degree:
             print('\033[34mEquation degree is too high to reduce it\033[39m')
         else:
@@ -144,3 +146,5 @@ class Equation(object):
             print('\033[1;33mThe polynomial degree is strictly greater than 2, I can\'t solve it\033[39m')
         else:
             self.solver[self.degree]()
+        print('')
+
