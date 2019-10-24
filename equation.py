@@ -80,14 +80,24 @@ class Equation(object):
                 raise ValueError('Invalid equation')
             i += 1
 
-    def _print_sign(self, x):
-        return '-' if x < 0 else '+'
-
     def _reduce(self):
         res = f'{self.x[0]:g} * X^0'
         for i in range(1, self.degree + 1):
             res += f' {self._print_sign(self.x[i])} {ft_abs(self.x[i]):g} * X^{i}'
         return res + ' = 0'
+
+    def _solve(self):
+        print()
+        if self.degree > self.max_degree:
+            print('\033[34mEquation degree is too high to reduce it\033[39m')
+        else:
+            self._print_reduce()
+        self._print_degree()
+        if self.degree > 2:
+            print('\033[1;33mThe polynomial degree is strictly greater than 2, I can\'t solve it\033[39m')
+        else:
+            self.solver[self.degree]()
+        print()
 
     def _quadratic(self):
         discriminant = self.x[1] * self.x[1] - 4 * self.x[2] * self.x[0]
@@ -138,16 +148,6 @@ class Equation(object):
     def _print_reduce(self):
         print(f'\033[1;36mReduced form\033[39m: {self._reduce()}')
 
-    def _solve(self):
-        print()
-        if self.degree > self.max_degree:
-            print('\033[34mEquation degree is too high to reduce it\033[39m')
-        else:
-            self._print_reduce()
-        self._print_degree()
-        if self.degree > 2:
-            print('\033[1;33mThe polynomial degree is strictly greater than 2, I can\'t solve it\033[39m')
-        else:
-            self.solver[self.degree]()
-        print('')
-
+    @staticmethod
+    def _print_sign(x):
+        return '-' if x < 0 else '+'
