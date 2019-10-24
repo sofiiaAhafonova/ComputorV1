@@ -109,7 +109,9 @@ class Equation(object):
         print(f'\033[1;36mDiscriminant\033[39m: {discriminant:g}\n')
         if discriminant == 0:
             print('\033[1;31mSolution is:\033[39m\n')
-            print(-self.x[1] / (2 * self.x[2]))
+            print(f'\033[34m (-b)/ (2 * a) \033[39m'
+                  f'= (-{self.x[1]})/ (2 * ({self.x[2]})) '
+                  f'= \033[32m{-self.x[1] / (2 * self.x[2])}\033[39m')
         else:
             if discriminant < 0:
                 print(f"Discriminant is strictly negative \nThe two\033[1;31m solutions\033[39m are:\n")
