@@ -141,10 +141,12 @@ class Equation(object):
         print(f'\033[34m-b/a \033[39m= -({self.x[0]})/({self.x[1]}) = \033[32m{res:g}\033[39m')
 
     def _zero_degree(self):
+        print()
         if self.x[0] == 0:
             print('\033[1;32mAll the real numbers are solution\033[39m')
         else:
             print('\033[1;33mThere is no solution of equation\033[39m')
+        self.success = False
 
     def _print_degree(self):
         print(f'\033[1;36mPolynomial degree\033[39m: {self.degree}')
