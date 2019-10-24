@@ -19,14 +19,16 @@ class Equation(object):
             print(f'\033[31m{v}\033[39m')
             self.success = False
 
-    def _parse(self, str_equation: str):
-        def parse_degree(arg):
-            num = int(arg)
-            self.degree = num if num > self.degree else self.degree
-            if self.degree > self.max_degree:
-                return -1
-            return num
+    def _parse_degree(self, arg, mult):
+        if not mult:
+            return self.degree
+        num = int(arg)
+        self.degree = num if num > self.degree else self.degree
+        if self.degree > self.max_degree:
+            return -1
+        return num
 
+    def _parse(self, str_equation: str):
         for s in self.allowed_symbols:
             str_equation = str_equation.replace(s, f' {s} ')
         str_equation = str_equation.replace('X', ' X')
@@ -47,9 +49,11 @@ class Equation(object):
                     equation[i] = 'X^0'
                 else:
                     raise ValueError('Invalid symbol instead or after coefficient')
+                if n - i != 1 and equation[i + 1] not in ['+', '-', '=']:
+                    raise ValueError('Invalid symbol instead or after coefficient')
                 e = equation[i]
                 e = '1' if e == 'X' else e[2:]
-                j = parse_degree(e)
+                j = self._parse_degree(e, mult)
                 if j == -1:
                     break
                 self.x[j] += mult
@@ -67,7 +71,7 @@ class Equation(object):
 
             elif re.match(self.pattern, e):
                 e = '1' if e == 'X' else e[2:]
-                j = parse_degree(e)
+                j = self._parse_degree(e, 1)
                 if j == -1:
                     break
                 self.x[j] += 1
@@ -97,16 +101,16 @@ class Equation(object):
                 i = ft_sqrt(-discriminant) / (2 * self.x[2])
                 x_1 = (-self.x[1] / (2 * self.x[2]), self._print_sign(-i), ft_abs(i))
                 x_2 = (-self.x[1] / (2 * self.x[2]), self._print_sign(i), ft_abs(i))
-                print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{:g} {} {:g} * i\033[39m"
+                print("\033[34m(-b - \u221ad) / (2 * a) = \033[32m{:g} {} {:g}i\033[39m"
                       .format(x_1[0], x_1[1], x_1[2]))
-                print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{:g} {} {:g} * i\033[39m"
+                print("\033[34m(-b + \u221ad) / (2 * a) = \033[32m{:g} {} {:g}i\033[39m"
                       .format(x_2[0], x_2[1], x_2[2]))
             else:
                 print("Discriminant is strictly positive, the two solutions are:")
                 x_1 = (-self.x[1] - ft_sqrt(discriminant)) / (2 * self.x[2])
                 x_2 = (-self.x[1] + ft_sqrt(discriminant)) / (2 * self.x[2])
-                print("\033[34m(-b - (d ** 0.5)) / (2 * a) = \033[32m{:g}\033[39m".format(x_1))
-                print("\033[34m(-b + (d ** 0.5)) / (2 * a) = \033[32m{:g}\033[39m".format(x_2))
+                print("\033[34m(-b - \u221ad) / (2 * a) = \033[32m{:g}\033[39m".format(x_1))
+                print("\033[34m(-b + \u221ad) / (2 * a) = \033[32m{:g}\033[39m".format(x_2))
 
     def _linear(self):
         res = - self.x[0] / self.x[1]

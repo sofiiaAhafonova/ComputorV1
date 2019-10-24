@@ -1,17 +1,8 @@
+PRECISION = 10 ** -10
+
+
 def ft_abs(a):
     return a if a >= 0 else -a
-
-
-def ft_pow(x, a):
-    if a == 0:
-        return 1
-    res = 1
-    for _ in range(a, 0, -1):
-        res *= x
-    return res if a > 0 else ft_div(x, res)
-
-
-PRECISION = 10 ** -10
 
 
 def float_sqrt(n, lo, hi):
